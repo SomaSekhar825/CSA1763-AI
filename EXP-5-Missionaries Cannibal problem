@@ -1,0 +1,66 @@
+from collections import deque
+
+
+def is_valid(state):
+    m_left, c_left, m_right, c_right = state
+
+    if (m_left > 0 and c_left > m_left) or (m_right > 0 and c_right > m_right):
+        return False
+   
+    return True
+
+
+def missionaries_cannibals_bfs():
+    
+    start_state = (3, 3, 0, 0, 'left') 
+    
+   
+    goal_state = (0, 0, 3, 3, 'right')
+    
+    
+    queue = deque([(start_state, [])])
+    
+
+    visited = set()
+    visited.add(start_state)
+    
+
+    moves = [(1, 0), (2, 0), (0, 1), (0, 2), (1, 1)]
+    
+    while queue:
+        current_state, path = queue.popleft()
+        
+
+        if current_state[:4] == goal_state[:4]:
+            return path + [current_state]
+        
+        m_left, c_left, m_right, c_right, boat_position = current_state
+        
+        for move in moves:
+            m_move, c_move = move
+            
+
+            if boat_position == 'left':
+                new_state = (m_left - m_move, c_left - c_move, m_right + m_move, c_right + c_move, 'right')
+            else:
+                new_state = (m_left + m_move, c_left + c_move, m_right - m_move, c_right - c_move, 'left')
+            
+
+            if all(x >= 0 for x in new_state[:4]) and is_valid(new_state[:4]) and new_state not in visited:
+                visited.add(new_state)
+                queue.append((new_state, path + [current_state]))
+    
+
+    return None
+
+def print_solution(solution):
+    if solution is None:
+        print("No solution found.")
+    else:
+        for state in solution:
+            m_left, c_left, m_right, c_right, boat_position = state
+            print(f"Left: Missionaries={m_left}, Cannibals={c_left} | Right: Missionaries={m_right}, Cannibals={c_right} | Boat: {boat_position}")
+
+solution = missionaries_cannibals_bfs()
+
+print_solution(solution)
