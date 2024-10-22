@@ -1,0 +1,41 @@
+from itertools import permutations
+
+
+def is_valid_solution(mapping, words, result):
+    def get_number(word):
+        return int(''.join(str(mapping[letter]) for letter in word))
+    
+   
+    word_sum = sum(get_number(word) for word in words)
+    
+    
+    return word_sum == get_number(result)
+
+
+def cryptarithmetic_solver(words, result):
+    
+    unique_letters = set(''.join(words) + result)
+    
+    if len(unique_letters) > 10:
+        print("There are more than 10 unique letters, solution is not possible.")
+        return
+    
+
+    for perm in permutations(range(10), len(unique_letters)):
+        mapping = dict(zip(unique_letters, perm))
+        
+
+        if is_valid_solution(mapping, words, result):
+            
+            print("Solution found!")
+            for letter, digit in mapping.items():
+                print(f"{letter} = {digit}")
+            return
+    
+    print("No solution found.")
+
+
+words = ["SEND", "MORE"]
+result = "MONEY"
+
+cryptarithmetic_solver(words, result)
